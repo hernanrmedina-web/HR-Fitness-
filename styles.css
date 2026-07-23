@@ -11,3 +11,8 @@
 .picker-group .picker-item{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 12px;margin:7px 0}
 .picker-group .picker-item.selected{border-color:var(--green);box-shadow:0 0 0 2px color-mix(in srgb,var(--green) 35%,transparent)}
 .picker-group .picker-item input{width:23px;height:23px;accent-color:var(--green)}
+
+.picker-group .picker-item{width:100%;text-align:left;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+.pick-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--bg);font-size:20px;font-weight:900;flex:0 0 auto}
+.picker-group .picker-item.selected .pick-mark{background:var(--green);color:#17300f}
+.selection-status{text-align:center;color:var(--muted);font-size:13px;font-weight:700;padding-top:6px}
