@@ -1,3 +1,6 @@
+## Versión 2.4
+Biblioteca ampliada y editor completo de rutinas.
+
 # HRM Fitness v2
 
 Aplicación web progresiva para registrar rutinas, series, notas, temporizador de descanso y fotos privadas de progreso.

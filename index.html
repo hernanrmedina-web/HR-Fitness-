@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="HRM Fitness">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" href="styles.css?v=2.3">
+  <link rel="stylesheet" href="styles.css?v=2.4">
   <title>HRM Fitness 2.3</title>
 </head>
 <body>
@@ -65,9 +65,9 @@
 
 <nav class="tabs"><button class="tab active" data-tab="home">⌂<br>Inicio</button><button class="tab" data-tab="history">▥<br>Historial</button><button class="tab" data-tab="progress">↗<br>Progreso</button><button class="tab" data-tab="settings">⚙<br>Ajustes</button></nav>
 
-<div id="routineModal" class="modal hidden"><div class="sheet"><div class="row"><h2>Nueva rutina</h2><button class="icon-btn" data-close="routineModal">✕</button></div><div class="form-gap"><input id="newRoutineName" placeholder="Nombre de la rutina"><div id="routineExerciseChips" class="chips"></div><button class="secondary" data-action="pick-routine-exercises">Escoger ejercicios</button><button class="primary" data-action="save-routine">Guardar rutina</button></div></div></div>
+<div id="routineModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2 id="routineModalTitle">Nueva rutina</h2><button class="icon-btn" data-close="routineModal">✕</button></div><div class="form-gap"><input id="newRoutineName" placeholder="Nombre de la rutina"><div id="routineExerciseChips" class="routine-editor-list"></div><button class="secondary" data-action="pick-routine-exercises">Escoger ejercicios</button><button id="saveRoutineButton" class="primary" data-action="save-routine">Guardar rutina</button></div></div></div>
 
-<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 2.3</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre, por ejemplo: press"><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
+<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 2.4 · 202 EJERCICIOS</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre o equipo"><select id="equipmentFilter"><option value="Todos">Todos los equipos</option></select><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
 
 <div id="exerciseHistoryModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">HISTORIAL DEL EJERCICIO</div><h2 id="exerciseHistoryTitle">Ejercicio</h2></div><button class="icon-btn" data-close="exerciseHistoryModal">✕</button></div><div id="exerciseHistorySummary" class="grid2"></div><div id="exerciseHistoryList" class="card"></div></div></div>
 
@@ -77,6 +77,6 @@
 
 <div id="compareModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2>Comparar fotos</h2><button class="icon-btn" data-close="compareModal">✕</button></div><div id="compareSelectors" class="grid2"></div><div id="compareView" class="compare-view"></div></div></div>
 
-<script src="exercises.js?v=2.3"></script><script src="app.js?v=2.3"></script>
+<script src="exercises.js?v=2.4"></script><script src="app.js?v=2.4"></script>
 </body>
 </html>
