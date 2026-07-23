@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="HRM Fitness">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" href="styles.css?v=2.5">
-  <title>HRM Fitness 2.5</title>
+  <link rel="stylesheet" href="styles.css?v=3.0">
+  <title>HRM Fitness 3.0</title>
 </head>
 <body>
 <div class="app">
@@ -20,13 +20,19 @@
       <button class="icon-btn" data-action="theme">◐</button>
     </header>
     <div class="card hero">
-      <div>Hola, Hernán</div><h2 id="todayTitle">¿Listo para entrenar?</h2><p id="todayText"></p>
+      <div id="greetingName">Hola, Hernán</div><h2 id="todayTitle">¿Listo para entrenar?</h2><p id="todayText"></p>
       <div class="goal-line"><span id="startWeightLabel"></span><span>Meta: <b id="goalWeightLabel"></b></span></div>
       <div class="goal-bar"><div id="goalFill"></div></div>
       <div class="goal-line"><span id="currentWeightLabel"></span><span id="remainingLabel"></span></div>
       <button class="primary full" data-action="start-suggested">Iniciar entrenamiento</button>
     </div>
-    <div class="stats"><div class="card stat"><b id="monthCount">0</b><span>Este mes</span></div><div class="card stat"><b id="setCount">0</b><span>Series</span></div><div class="card stat"><b id="volumeCount">0</b><span>lb volumen</span></div></div>
+    <div class="dashboard-grid">
+      <div class="card dash-stat"><span>🔥 Racha</span><b id="streakCount">0 días</b></div>
+      <div class="card dash-stat"><span>🏋️ Esta semana</span><b id="weeklyVolume">0 lb</b></div>
+      <div class="card dash-stat"><span>📅 Entrenos</span><b id="monthCount">0</b></div>
+      <div class="card dash-stat"><span>⚖️ Peso actual</span><b id="dashboardWeight">—</b></div>
+    </div>
+    <div class="stats"><div class="card stat"><b id="setCount">0</b><span>Series totales</span></div><div class="card stat"><b id="volumeCount">0</b><span>lb volumen</span></div><div class="card stat"><b id="recentPRs">0</b><span>PR recientes</span></div></div>
     <div class="section-title"><h2>Rutinas</h2><button class="ghost" data-action="new-routine">+ Nueva</button></div>
     <div id="routineList"></div>
     <div class="section-title"><h2>Progreso reciente</h2><span class="muted small">Últimos 7 entrenamientos</span></div>
@@ -50,14 +56,14 @@
     <header class="header"><h1>Progreso</h1><button class="icon-btn" data-action="theme">◐</button></header>
     <div class="grid2"><div class="card stat"><b id="bestVolume">0</b><span>Mejor volumen</span></div><div class="card stat"><b id="prCount">0</b><span>Récords</span></div></div>
     <div class="card"><div class="section-title"><h3>Peso corporal</h3><button class="ghost" data-action="weight">+ Registrar</button></div><div id="weightChart" class="chart"></div></div>
-    <div class="card"><h3>Calendario</h3><div id="calendar" class="calendar"></div></div>
+    <div class="card"><h3>Últimas 4 semanas</h3><div id="weeklyChart" class="chart weekly-chart"></div></div><div class="card"><h3>Grupos musculares</h3><div id="muscleSummary" class="muscle-summary"></div></div><div class="card"><h3>Calendario</h3><div id="calendar" class="calendar"></div></div>
     <div class="card"><h3>Récords personales</h3><div id="prList"></div></div>
     <div class="card"><div class="section-title"><h3>Fotos de progreso</h3><button class="ghost" data-action="photo">+ Foto</button></div><div id="photoGallery" class="photo-grid"></div><button class="secondary full" data-action="compare-photos">Comparar dos fotos</button></div>
   </section>
 
   <section id="settings" class="page hidden">
     <header class="header"><h1>Ajustes</h1><button class="icon-btn" data-action="theme">◐</button></header>
-    <div class="card form-gap"><label>Peso inicial (lb)<input id="startWeightInput" type="number" step="0.1"></label><label>Peso meta (lb)<input id="goalWeightInput" type="number" step="0.1"></label><label>Temporizador predeterminado<select id="defaultTimerInput"><option value="60">60 segundos</option><option value="90">90 segundos</option><option value="120">120 segundos</option></select></label><button class="primary" data-action="save-settings">Guardar ajustes</button></div>
+    <div class="card form-gap"><label>Tu nombre<input id="profileNameInput" type="text" placeholder="Hernán"></label><label>Meta semanal de entrenamientos<input id="weeklyGoalInput" type="number" min="1" max="7"></label><label>Peso inicial (lb)<input id="startWeightInput" type="number" step="0.1"></label><label>Peso meta (lb)<input id="goalWeightInput" type="number" step="0.1"></label><label>Temporizador predeterminado<select id="defaultTimerInput"><option value="60">60 segundos</option><option value="90">90 segundos</option><option value="120">120 segundos</option></select></label><button class="primary" data-action="save-settings">Guardar ajustes</button></div>
     <div class="card"><h3>Notificaciones</h3><p class="muted">Permite avisos al terminar el descanso. En iPhone, abre la app desde “Añadir a pantalla de inicio”.</p><button id="notificationButton" class="secondary full" data-action="notifications">Activar notificaciones</button></div>
     <div class="card"><h3>Datos</h3><p class="muted">Entrenamientos y fotos se guardan en este dispositivo.</p><button class="danger full" data-action="clear-data">Borrar todos los datos</button></div>
   </section>
@@ -67,7 +73,7 @@
 
 <div id="routineModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2 id="routineModalTitle">Nueva rutina</h2><button class="icon-btn" data-close="routineModal">✕</button></div><div class="form-gap"><input id="newRoutineName" placeholder="Nombre de la rutina"><div id="routineExerciseChips" class="routine-editor-list"></div><button class="secondary" data-action="pick-routine-exercises">Escoger ejercicios</button><button id="saveRoutineButton" class="primary" data-action="save-routine">Guardar rutina</button></div></div></div>
 
-<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 2.5 · EJERCICIOS POR GRUPO Y EQUIPO</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre o equipo"><select id="equipmentFilter"><option value="Todos">Todos los equipos</option></select><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
+<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 3.0 · EJERCICIOS POR GRUPO Y EQUIPO</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre o equipo"><select id="equipmentFilter"><option value="Todos">Todos los equipos</option></select><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
 
 <div id="exerciseHistoryModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">HISTORIAL DEL EJERCICIO</div><h2 id="exerciseHistoryTitle">Ejercicio</h2></div><button class="icon-btn" data-close="exerciseHistoryModal">✕</button></div><div id="exerciseHistorySummary" class="grid2"></div><div id="exerciseHistoryList" class="card"></div></div></div>
 
@@ -77,6 +83,6 @@
 
 <div id="compareModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2>Comparar fotos</h2><button class="icon-btn" data-close="compareModal">✕</button></div><div id="compareSelectors" class="grid2"></div><div id="compareView" class="compare-view"></div></div></div>
 
-<script src="exercises.js?v=2.5"></script><script src="app.js?v=2.5"></script>
+<script src="exercises.js?v=3.0"></script><script src="app.js?v=3.0"></script>
 </body>
 </html>
