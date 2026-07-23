@@ -26,3 +26,10 @@ Aplicación web progresiva para registrar rutinas, series, notas, temporizador d
 - Permite eliminar rutinas antiguas desde Inicio.
 - Solicita confirmación antes de borrar.
 - El historial de entrenamientos no se elimina al borrar una rutina.
+
+
+## Versión 3.1
+- Registro diario de agua, proteína, pasos y sueño.
+- Entrenador HRM con recomendaciones basadas en historial.
+- Exportación e importación de respaldo en JSON.
+- Conserva la biblioteca de ejercicios de la versión 3.0.

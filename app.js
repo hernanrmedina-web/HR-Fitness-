@@ -112,7 +112,7 @@ function saveWeight(){const w=+$('newWeight').value;if(!w)return alert('Escribe 
 function loadSettingsForm(){const s=settings();$('profileNameInput').value=s.profileName||'Hernán';$('weeklyGoalInput').value=s.weeklyGoal||4;$('startWeightInput').value=s.startWeight;$('goalWeightInput').value=s.goalWeight;$('defaultTimerInput').value=s.defaultTimer;setTimer(s.defaultTimer)}function saveSettings(){const s={profileName:$('profileNameInput').value.trim()||'Hernán',weeklyGoal:+$('weeklyGoalInput').value||4,startWeight:+$('startWeightInput').value||202,goalWeight:+$('goalWeightInput').value||177,defaultTimer:+$('defaultTimerInput').value||90};save('hrmSettings',s);setTimer(s.defaultTimer);updateAll();alert('Ajustes guardados.')}
 async function requestNotifications(){if(!('Notification'in window))return alert('Este navegador no admite notificaciones.');const p=await Notification.requestPermission();$('notificationButton').textContent=p==='granted'?'Notificaciones activadas':'Activar notificaciones';if(p!=='granted')alert('No se concedió permiso para notificaciones.')}
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('hrmTheme',document.body.classList.contains('dark')?'dark':'light')}
-function clearData(){if(!confirm('¿Seguro? Se borrarán entrenamientos, pesos, rutinas y fotos.'))return;['hrmWorkouts','hrmWeights','hrmRoutines','hrmSettings','hrmDraftExercises'].forEach(localStorage.removeItem.bind(localStorage));photoDB.clear().then(renderPhotos);loadSettingsForm();updateAll()}
+function clearData(){if(!confirm('¿Seguro? Se borrarán entrenamientos, pesos, rutinas y fotos.'))return;['hrmWorkouts','hrmWeights','hrmRoutines','hrmSettings','hrmHealth','hrmDraftExercises'].forEach(localStorage.removeItem.bind(localStorage));photoDB.clear().then(renderPhotos);loadSettingsForm();updateAll()}
 const photoDB={db:null,async open(){if(this.db)return this.db;this.db=await new Promise((res,rej)=>{const r=indexedDB.open('hrmFitnessDB',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});return this.db},async all(){const db=await this.open();return new Promise((res,rej)=>{const r=db.transaction('photos').objectStore('photos').getAll();r.onsuccess=()=>res(r.result.sort((a,b)=>b.id-a.id));r.onerror=()=>rej(r.error)})},async put(v){const db=await this.open();return new Promise((res,rej)=>{const r=db.transaction('photos','readwrite').objectStore('photos').put(v);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})},async del(id){const db=await this.open();return new Promise((res,rej)=>{const r=db.transaction('photos','readwrite').objectStore('photos').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})},async clear(){const db=await this.open();return new Promise((res,rej)=>{const r=db.transaction('photos','readwrite').objectStore('photos').clear();r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}};
 async function savePhoto(){const f=$('photoInput').files[0];if(!f)return alert('Selecciona una foto.');if(f.size>12*1024*1024)return alert('La foto es demasiado grande. Usa una de menos de 12 MB.');await photoDB.put({id:Date.now(),date:new Date().toISOString(),pose:$('photoPose').value,weight:$('photoWeight').value,notes:$('photoNotes').value,blob:f});$('photoInput').value='';$('photoWeight').value='';$('photoNotes').value='';closeModal('photoModal');renderPhotos()}
 async function renderPhotos(){const photos=await photoDB.all();$('photoGallery').innerHTML=photos.length?photos.map(p=>`<div class="photo-card"><img src="${URL.createObjectURL(p.blob)}" alt="Foto de progreso"><button class="photo-delete" data-delete-photo="${p.id}">✕</button><div class="caption"><b>${esc(p.pose)}</b> · ${new Date(p.date).toLocaleDateString('es-US')}${p.weight?` · ${esc(p.weight)} lb`:''}</div></div>`).join(''):'<p class="muted">Todavía no has guardado fotos.</p>'}
@@ -122,3 +122,48 @@ document.addEventListener('click',async e=>{const b=e.target.closest('button');i
 document.addEventListener('input',e=>{if(e.target.dataset.setInput){const[ei,si,key]=e.target.dataset.setInput.split(',');currentSets[+ei][+si][key]=e.target.value;saveWorkoutDraft();updateWorkoutLive()}else if(e.target.dataset.note!==undefined){exerciseNotes[+e.target.dataset.note]=e.target.value;saveWorkoutDraft()}else if(e.target.id==='exerciseSearch')renderPicker()});document.addEventListener('change',e=>{if(e.target.id==='equipmentFilter')renderPicker()});
 function restoreWorkoutDraft(){const d=load('hrmWorkoutDraft',null);if(!d?.exercises?.length)return;const age=Date.now()-(d.startedAt||0);if(age>24*60*60*1000){localStorage.removeItem('hrmWorkoutDraft');return}if(!confirm('Encontramos un entrenamiento sin finalizar. ¿Deseas continuarlo?')){localStorage.removeItem('hrmWorkoutDraft');return}currentRoutineId=d.routineId||null;currentWorkoutStartedAt=d.startedAt||Date.now();currentExercises=d.exercises||[];currentSets=d.sets||{};exerciseNotes=d.notes||{};$('workoutTitle').textContent=d.routineName||'Entrenamiento';$('workoutDate').textContent=new Date(currentWorkoutStartedAt).toLocaleDateString('es-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});renderWorkoutExercises();showSection('workout');startWorkoutClock();timerEnd=d.timerEnd||0;timerPausedLeft=d.timerPausedLeft||settings().defaultTimer;drawTimer();if(timerEnd)timerTick=setInterval(drawTimer,250)}
 if(localStorage.getItem('hrmTheme')==='dark')document.body.classList.add('dark');if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});loadSettingsForm();updateAll();setTimeout(restoreWorkoutDraft,150);
+
+
+/* HRM Fitness 3.1: salud, entrenador y respaldos */
+const healthLogs=()=>load('hrmHealth',[]);
+function dateKey(d=new Date()){return new Date(d).toISOString().slice(0,10)}
+function renderHealth(){
+  const logs=healthLogs().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const today=logs.find(x=>dateKey(x.date)===dateKey());
+  const node=$('healthToday'); if(!node)return;
+  const cards=[['💧','Agua',today?.water?`${today.water} vasos`:'—'],['🥩','Proteína',today?.protein?`${today.protein} g`:'—'],['👟','Pasos',today?.steps?Number(today.steps).toLocaleString():'—'],['😴','Sueño',today?.sleep?`${today.sleep} h`:'—']];
+  node.innerHTML=cards.map(([i,l,v])=>`<div class="health-stat"><span>${i} ${l}</span><b>${v}</b></div>`).join('');
+  $('healthHistory').innerHTML=logs.length?logs.slice(0,7).map(x=>`<div class="health-row"><span>${new Date(x.date).toLocaleDateString('es-US',{month:'short',day:'numeric'})}</span><span>💧 ${x.water||0}</span><span>🥩 ${x.protein||0}g</span><span>👟 ${Number(x.steps||0).toLocaleString()}</span><span>😴 ${x.sleep||0}h</span></div>`).join(''):'<p class="muted">Aún no hay registros de salud.</p>';
+}
+function openHealth(){
+  const today=healthLogs().find(x=>dateKey(x.date)===dateKey())||{};
+  $('healthWater').value=today.water||'';$('healthProtein').value=today.protein||'';$('healthSteps').value=today.steps||'';$('healthSleep').value=today.sleep||'';openModal('healthModal');
+}
+function saveHealth(){
+  const logs=healthLogs(),key=dateKey(),entry={date:new Date().toISOString(),water:+$('healthWater').value||0,protein:+$('healthProtein').value||0,steps:+$('healthSteps').value||0,sleep:+$('healthSleep').value||0};
+  const i=logs.findIndex(x=>dateKey(x.date)===key);if(i>=0)logs[i]=entry;else logs.push(entry);save('hrmHealth',logs);closeModal('healthModal');renderHealth();renderCoachInsight();
+}
+function renderCoachInsight(){
+  const node=$('coachInsight');if(!node)return;const ws=workouts(),s=settings(),logs=healthLogs(),tips=[];
+  if(!ws.length)tips.push('Empieza con una rutina y registra todas las series para recibir recomendaciones personalizadas.');
+  else{
+    const last=ws[0],days=(Date.now()-new Date(last.date).getTime())/86400000;
+    if(days>=3)tips.push(`Han pasado ${Math.floor(days)} días desde tu último entrenamiento. Una sesión corta hoy puede ayudarte a recuperar la constancia.`);
+    const thisWeek=ws.filter(w=>Date.now()-new Date(w.date).getTime()<7*86400000).length;
+    if(thisWeek<s.weeklyGoal)tips.push(`Llevas ${thisWeek} de ${s.weeklyGoal} entrenamientos esta semana.`);else tips.push(`Meta semanal cumplida: ${thisWeek} entrenamientos. Prioriza recuperación y buena técnica.`);
+    const recent=ws.slice(0,3).map(w=>volume(w).v);if(recent.length===3&&recent[0]>recent[1]&&recent[1]>recent[2])tips.push('Tu volumen ha subido en tres sesiones consecutivas. Mantén el progreso sin sacrificar la técnica.');
+  }
+  const today=logs.find(x=>dateKey(x.date)===dateKey());if(today){if(today.water<6)tips.push('Tu agua registrada hoy está baja. Intenta acercarte a tu objetivo diario.');if(today.sleep&&today.sleep<7)tips.push('Dormiste menos de 7 horas; considera reducir un poco la intensidad.');}
+  node.innerHTML=`<strong>${tips[0]||'Sigue registrando tus entrenamientos.'}</strong>${tips.slice(1,3).map(t=>`<p>${t}</p>`).join('')}`;
+}
+function exportBackup(){
+  const payload={app:'HRM Fitness',version:'3.1',exportedAt:new Date().toISOString(),data:{hrmRoutines:load('hrmRoutines',[]),hrmWorkouts:load('hrmWorkouts',[]),hrmWeights:load('hrmWeights',[]),hrmSettings:load('hrmSettings',{}),hrmHealth:load('hrmHealth',[])}};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`HRM-Fitness-respaldo-${dateKey()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function importBackupFile(file){
+  try{const payload=JSON.parse(await file.text());if(payload.app!=='HRM Fitness'||!payload.data)throw new Error('invalid');if(!confirm('¿Importar este respaldo? Reemplazará rutinas, entrenamientos, pesos, salud y ajustes actuales.'))return;Object.entries(payload.data).forEach(([k,v])=>save(k,v));loadSettingsForm();updateAll();renderHealth();renderCoachInsight();alert('Respaldo importado correctamente.');}catch(e){alert('El archivo no es un respaldo válido de HRM Fitness.');}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;switch(b.dataset.action){case'health-log':openHealth();break;case'save-health':saveHealth();break;case'export-backup':exportBackup();break;case'import-backup':$('backupInput').click();break;}});
+document.addEventListener('change',e=>{if(e.target.id==='backupInput'&&e.target.files[0]){importBackupFile(e.target.files[0]);e.target.value='';}});
+const updateAll31=updateAll;updateAll=function(){updateAll31();renderHealth();renderCoachInsight()};
+renderHealth();renderCoachInsight();

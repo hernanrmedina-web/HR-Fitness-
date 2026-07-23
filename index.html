@@ -9,8 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="HRM Fitness">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" href="styles.css?v=3.0">
-  <title>HRM Fitness 3.0</title>
+  <link rel="stylesheet" href="styles.css?v=3.1">
+  <title>HRM Fitness 3.1</title>
 </head>
 <body>
 <div class="app">
@@ -33,6 +33,7 @@
       <div class="card dash-stat"><span>⚖️ Peso actual</span><b id="dashboardWeight">—</b></div>
     </div>
     <div class="stats"><div class="card stat"><b id="setCount">0</b><span>Series totales</span></div><div class="card stat"><b id="volumeCount">0</b><span>lb volumen</span></div><div class="card stat"><b id="recentPRs">0</b><span>PR recientes</span></div></div>
+    <div class="card coach-card"><div class="section-title"><h2>Entrenador HRM</h2><span class="version-badge">3.1</span></div><div id="coachInsight" class="coach-insight">Completa entrenamientos para recibir recomendaciones.</div></div>
     <div class="section-title"><h2>Rutinas</h2><button class="ghost" data-action="new-routine">+ Nueva</button></div>
     <div id="routineList"></div>
     <div class="section-title"><h2>Progreso reciente</h2><span class="muted small">Últimos 7 entrenamientos</span></div>
@@ -57,6 +58,7 @@
     <div class="grid2"><div class="card stat"><b id="bestVolume">0</b><span>Mejor volumen</span></div><div class="card stat"><b id="prCount">0</b><span>Récords</span></div></div>
     <div class="card"><div class="section-title"><h3>Peso corporal</h3><button class="ghost" data-action="weight">+ Registrar</button></div><div id="weightChart" class="chart"></div></div>
     <div class="card"><h3>Últimas 4 semanas</h3><div id="weeklyChart" class="chart weekly-chart"></div></div><div class="card"><h3>Grupos musculares</h3><div id="muscleSummary" class="muscle-summary"></div></div><div class="card"><h3>Calendario</h3><div id="calendar" class="calendar"></div></div>
+    <div class="card"><div class="section-title"><h3>Salud diaria</h3><button class="ghost" data-action="health-log">+ Registrar</button></div><div id="healthToday" class="health-grid"></div><div id="healthHistory" class="health-history"></div></div>
     <div class="card"><h3>Récords personales</h3><div id="prList"></div></div>
     <div class="card"><div class="section-title"><h3>Fotos de progreso</h3><button class="ghost" data-action="photo">+ Foto</button></div><div id="photoGallery" class="photo-grid"></div><button class="secondary full" data-action="compare-photos">Comparar dos fotos</button></div>
   </section>
@@ -65,6 +67,7 @@
     <header class="header"><h1>Ajustes</h1><button class="icon-btn" data-action="theme">◐</button></header>
     <div class="card form-gap"><label>Tu nombre<input id="profileNameInput" type="text" placeholder="Hernán"></label><label>Meta semanal de entrenamientos<input id="weeklyGoalInput" type="number" min="1" max="7"></label><label>Peso inicial (lb)<input id="startWeightInput" type="number" step="0.1"></label><label>Peso meta (lb)<input id="goalWeightInput" type="number" step="0.1"></label><label>Temporizador predeterminado<select id="defaultTimerInput"><option value="60">60 segundos</option><option value="90">90 segundos</option><option value="120">120 segundos</option></select></label><button class="primary" data-action="save-settings">Guardar ajustes</button></div>
     <div class="card"><h3>Notificaciones</h3><p class="muted">Permite avisos al terminar el descanso. En iPhone, abre la app desde “Añadir a pantalla de inicio”.</p><button id="notificationButton" class="secondary full" data-action="notifications">Activar notificaciones</button></div>
+    <div class="card"><h3>Copia de seguridad</h3><p class="muted">Exporta rutinas, entrenamientos, pesos, salud y ajustes. Las fotos permanecen en este dispositivo.</p><div class="grid2"><button class="secondary" data-action="export-backup">Exportar respaldo</button><button class="secondary" data-action="import-backup">Importar respaldo</button></div><input id="backupInput" type="file" accept="application/json" class="hidden"></div>
     <div class="card"><h3>Datos</h3><p class="muted">Entrenamientos y fotos se guardan en este dispositivo.</p><button class="danger full" data-action="clear-data">Borrar todos los datos</button></div>
   </section>
 </div>
@@ -83,6 +86,8 @@
 
 <div id="compareModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2>Comparar fotos</h2><button class="icon-btn" data-close="compareModal">✕</button></div><div id="compareSelectors" class="grid2"></div><div id="compareView" class="compare-view"></div></div></div>
 
-<script src="exercises.js?v=3.0"></script><script src="app.js?v=3.0"></script>
+
+<div id="healthModal" class="modal hidden"><div class="sheet"><div class="row"><h2>Registrar salud de hoy</h2><button class="icon-btn" data-close="healthModal">✕</button></div><div class="form-gap"><label>Agua (vasos)<input id="healthWater" type="number" min="0" step="1" placeholder="8"></label><label>Proteína (g)<input id="healthProtein" type="number" min="0" step="1" placeholder="160"></label><label>Pasos<input id="healthSteps" type="number" min="0" step="100" placeholder="8000"></label><label>Sueño (horas)<input id="healthSleep" type="number" min="0" max="24" step="0.1" placeholder="7.5"></label><button class="primary" data-action="save-health">Guardar registro</button></div></div></div>
+<script src="exercises.js?v=3.1"></script><script src="app.js?v=3.1"></script>
 </body>
 </html>
