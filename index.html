@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="HRM Fitness">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2.2.1">
   <title>HRM Fitness 2.2</title>
 </head>
 <body>
@@ -67,7 +67,7 @@
 
 <div id="routineModal" class="modal hidden"><div class="sheet"><div class="row"><h2>Nueva rutina</h2><button class="icon-btn" data-close="routineModal">✕</button></div><div class="form-gap"><input id="newRoutineName" placeholder="Nombre de la rutina"><div id="routineExerciseChips" class="chips"></div><button class="secondary" data-action="pick-routine-exercises">Escoger ejercicios</button><button class="primary" data-action="save-routine">Guardar rutina</button></div></div></div>
 
-<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 2.2</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre, por ejemplo: press"><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
+<div id="pickerModal" class="modal hidden"><div class="sheet tall"><div class="row"><div><div class="eyebrow">BIBLIOTECA 2.2.1</div><h2>Escoge tus ejercicios</h2></div><button class="icon-btn" data-close="pickerModal">✕</button></div><input id="exerciseSearch" placeholder="Buscar por nombre, por ejemplo: press"><div id="muscleFilters" class="chips"></div><div id="exercisePickerList" class="picker-list"></div><div class="sticky-actions"><div id="pickerSelectionStatus" class="selection-status">Ningún ejercicio seleccionado</div><button id="confirmPickerButton" class="primary full" data-action="confirm-picker">Agregar ejercicios</button></div></div></div>
 
 <div id="weightModal" class="modal hidden"><div class="sheet"><div class="row"><h2>Registrar peso</h2><button class="icon-btn" data-close="weightModal">✕</button></div><div class="form-gap"><input id="newWeight" type="number" step="0.1" placeholder="Peso actual en lb"><button class="primary" data-action="save-weight">Guardar</button></div></div></div>
 
@@ -75,6 +75,6 @@
 
 <div id="compareModal" class="modal hidden"><div class="sheet tall"><div class="row"><h2>Comparar fotos</h2><button class="icon-btn" data-close="compareModal">✕</button></div><div id="compareSelectors" class="grid2"></div><div id="compareView" class="compare-view"></div></div></div>
 
-<script src="exercises.js"></script><script src="app.js"></script>
+<script src="exercises.js?v=2.2.1"></script><script src="app.js?v=2.2.1"></script>
 </body>
 </html>
