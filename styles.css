@@ -16,3 +16,5 @@
 .pick-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--bg);font-size:20px;font-weight:900;flex:0 0 auto}
 .picker-group .picker-item.selected .pick-mark{background:var(--green);color:#17300f}
 .selection-status{text-align:center;color:var(--muted);font-size:13px;font-weight:700;padding-top:6px}
+
+.routine-info{min-width:0;flex:1}.routine-actions{display:flex;align-items:center;gap:8px}.routine-delete{width:44px;height:44px;padding:0;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 35%,transparent)}

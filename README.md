@@ -17,3 +17,9 @@ Aplicación web progresiva para registrar rutinas, series, notas, temporizador d
 - Selector de ejercicios agrupado visualmente por grupo muscular.
 - Buscador y filtros horizontales.
 - Mejor actualización del caché para GitHub Pages.
+
+
+## Versión 2.2
+- Permite eliminar rutinas antiguas desde Inicio.
+- Solicita confirmación antes de borrar.
+- El historial de entrenamientos no se elimina al borrar una rutina.
